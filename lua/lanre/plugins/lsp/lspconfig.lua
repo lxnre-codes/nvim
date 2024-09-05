@@ -1,18 +1,27 @@
 -- import lspconfig plugin safely
 local lspconfig_status, lspconfig = pcall(require, "lspconfig")
 if not lspconfig_status then
+	print("LSP Config not found, lsp setup not loaded")
 	return
 end
 
 -- import cmp-nvim-lsp plugin safely
 local cmp_nvim_lsp_status, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 if not cmp_nvim_lsp_status then
+	print("CMP Nvim LSP not found, cmp-nvim-lsp setup not loaded")
 	return
 end
 
 -- import typescript plugin safely
 local typescript_setup, typescript = pcall(require, "typescript")
 if not typescript_setup then
+	print("Typescript LSP not found, typescript setup not loaded")
+	return
+end
+
+local navic_setup, navic = pcall(require, "nvim-navic")
+if not navic_setup then
+	print("Navic LSP not found, navic setup not loaded")
 	return
 end
 
@@ -60,6 +69,8 @@ local on_attach = function(client, bufnr)
 	if client.name == "gopls" or client.name == "zls" then
 		vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 	end
+
+	-- navic.attach(client, bufnr)
 end
 
 -- used to enable autocompletion (assign to every lsp server config)
