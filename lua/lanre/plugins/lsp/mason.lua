@@ -21,7 +21,8 @@ mason.setup()
 mason_lspconfig.setup({
 	-- list of servers for mason to install
 	ensure_installed = {
-		"tsserver",
+		"solidity_ls",
+		"ts_ls",
 		"html",
 		"cssls",
 		"tailwindcss",
@@ -38,7 +39,7 @@ mason_lspconfig.setup({
 mason_null_ls.setup({
 	-- list of formatters & linters for mason to install
 	ensure_installed = {
-		"prettier", -- ts/js formatter
+		"prettierd", -- ts/js formatter
 		"stylua", -- lua formatter
 		"eslint_d", -- ts/js linter
 		"fixjson",

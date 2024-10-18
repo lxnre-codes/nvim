@@ -61,7 +61,7 @@ local on_attach = function(client, bufnr)
 	keymap.set("n", "<leader>gh", "<cmd>Lspsaga hover_doc<CR>", opts) -- hover the current buffer
 	keymap.set("n", "ttg", "<cmd>Lspsaga term_toggle<CR>", opts) -- hover the current buffer
 	-- typescript specific keymaps (e.g. rename file and update imports)
-	if client.name == "tsserver" then
+	if client.name == "ts_ls" then
 		keymap.set("n", "<leader>rf", ":TypescriptRenameFile<CR>") -- rename file and update imports
 		keymap.set("n", "<leader>oi", ":TypescriptOrganizeImports<CR>") -- organize imports (not in youtube nvim video)
 		keymap.set("n", "<leader>ru", ":TypescriptRemoveUnused<CR>") -- remove unused variables (not in youtube nvim video)
@@ -70,7 +70,9 @@ local on_attach = function(client, bufnr)
 		vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 	end
 
-	-- navic.attach(client, bufnr)
+	if client.name == "bufls" then
+		keymap.set("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
+	end
 end
 
 -- used to enable autocompletion (assign to every lsp server config)
@@ -96,13 +98,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = { "*.tsx", "*.ts", "*.jsx", "*.js" },
 	command = "silent! EslintFixAll",
 	group = vim.api.nvim_create_augroup("MyAutocmdsJavaScripFormatting", {}),
-})
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*.go",
-	callback = function()
-		vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" } }, apply = true })
-	end,
 })
 
 -- vim.cmd([[autocmd BufWritePre * lua vim.lsp.buf.format()]])
@@ -187,6 +182,13 @@ typescript.setup({
 	},
 })
 
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = "*.go",
+	callback = function()
+		vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" } }, apply = true })
+	end,
+})
+
 -- configure go server
 lspconfig["gopls"].setup({
 	capabilities = capabilities,
@@ -226,6 +228,8 @@ lspconfig["solidity"].setup({
 lspconfig["sqlls"].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
+	filetypes = { "solidity" },
+	root_dir = util.root_pattern("hardhat.config.*", ".git"),
 })
 
 -- configure python server
@@ -278,4 +282,45 @@ lspconfig["lua_ls"].setup({
 lspconfig["zls"].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
+})
+
+lspconfig["dockerls"].setup({
+	capabilities = capabilities,
+	on_attach = function(client, bufnr)
+		on_attach(client, bufnr)
+
+		-- Customize diagnostic filtering to ignore a specific warning
+		vim.lsp.handlers["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
+			result.diagnostics = vim.tbl_filter(function(diagnostic)
+				print(diagnostic.message)
+				-- Replace "Specific warning message" with the actual message you want to ignore
+				return diagnostic.message ~= "Pin versions in apt get install" and diagnostic.code ~= "DL3008"
+			end, result.diagnostics)
+
+			vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
+		end
+	end,
+})
+
+-- Formatting configuration
+
+local solhint = require("efmls-configs.linters.solhint")
+local prettier_d = require("efmls-configs.formatters.prettier_d")
+
+lspconfig.efm.setup({
+	filetypes = { "solidity" },
+	init_options = {
+		codeAction = true,
+		completion = true,
+		documentFormatting = true,
+		documentRangeFormatting = true,
+		documentSymbol = true,
+		hover = true,
+	},
+	settings = {
+		rootMarkers = { "hardhat.config.js", ".git" },
+		languages = {
+			solidity = { solhint, prettier_d },
+		},
+	},
 })

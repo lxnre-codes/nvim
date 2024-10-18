@@ -15,8 +15,8 @@ null_ls.setup({
 	-- setup formatters & linters
 	sources = {
 		--  to disable file types use
-		--  "formatting.prettier.with({disabled_filetypes: {}})" (see null-ls docs)
-		formatting.prettier, -- js/ts formatter
+		--  "formatting.prettierd.with({disabled_filetypes: {}})" (see null-ls docs)
+		formatting.prettierd, -- js/ts formatter
 		formatting.stylua, -- lua formatter
 		formatting.fixjson, -- json formatter
 		formatting.goimports, -- go formatter
@@ -31,6 +31,7 @@ null_ls.setup({
 				return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json" }) -- change file extension if you use something else
 			end,
 		}),
+		null_ls.builtins.diagnostics.hadolint, -- Dockerfile linter
 	},
 	-- configure format on save
 	on_attach = function(current_client, bufnr)

@@ -63,6 +63,7 @@ return packer.startup(function(use)
 		end,
 	})
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- dependency for better sorting performance
+	use({ "nvim-telescope/telescope-media-files.nvim" })
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" }) -- fuzzy finder
 
 	-- autocompletion
@@ -90,6 +91,11 @@ return packer.startup(function(use)
 			"nvim-tree/nvim-web-devicons", -- optional
 		},
 	}) -- enhanced lsp uis
+	use({
+		"creativenull/efmls-configs-nvim",
+		tag = "v1.*", -- tag is optional, but recommended
+		requires = { "neovim/nvim-lspconfig" },
+	})
 
 	use({
 		"ray-x/navigator.lua",
@@ -198,6 +204,14 @@ return packer.startup(function(use)
 	})
 
 	use({ "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" })
+
+	use({
+		"princejoogie/chafa.nvim",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"m00qek/baleia.nvim",
+		},
+	})
 
 	if packer_bootstrap then
 		require("packer").sync()
