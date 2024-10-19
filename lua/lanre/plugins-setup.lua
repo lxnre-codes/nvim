@@ -181,7 +181,7 @@ return packer.startup(function(use)
 	use({
 		"yetone/avante.nvim",
 		-- event = "VeryLazy",
-		run = "make", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
+		-- 	run = "make BUILD_FROM_SOURCE=true", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
 		requires = {
 			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 			"stevearc/dressing.nvim",
@@ -191,15 +191,20 @@ return packer.startup(function(use)
 			{
 				"MeanderingProgrammer/render-markdown.nvim",
 				after = { "nvim-treesitter" },
+				requires = { "nvim-tree/nvim-web-devicons", opt = true },
 				config = function()
 					require("render-markdown").setup({
-						file_types = { "markdown", "Avante" },
+						--	file_types = { "markdown", "Avante" },
 					})
 				end,
 			},
 		},
 		config = function()
-			require("avante").setup({})
+			require("avante_lib").load()
+			require("avante").setup({
+				provider = "claude", -- Recommend using Claude
+				auto_suggestions_provider = "claude",
+			})
 		end,
 	})
 
