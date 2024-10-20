@@ -181,7 +181,7 @@ return packer.startup(function(use)
 	use({
 		"yetone/avante.nvim",
 		-- event = "VeryLazy",
-		-- 	run = "make BUILD_FROM_SOURCE=true", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
+		run = "make BUILD_FROM_SOURCE=true", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
 		requires = {
 			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 			"stevearc/dressing.nvim",

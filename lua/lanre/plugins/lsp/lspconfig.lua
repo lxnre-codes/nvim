@@ -219,10 +219,7 @@ lspconfig["intelephense"].setup({
 -- })
 
 -- configure solidit server
-lspconfig["solidity"].setup({
-	capabilities = capabilities,
-	on_attach = on_attach,
-})
+lspconfig["solidity"].setup({})
 
 -- configure sql server
 lspconfig["sqlls"].setup({
@@ -280,8 +277,8 @@ lspconfig["lua_ls"].setup({
 
 -- configure zig server
 lspconfig["zls"].setup({
-	capabilities = capabilities,
 	on_attach = on_attach,
+	capabilities = capabilities,
 })
 
 lspconfig["dockerls"].setup({
@@ -302,13 +299,21 @@ lspconfig["dockerls"].setup({
 	end,
 })
 
--- Formatting configuration
+lspconfig["rust_analyzer"].setup({})
+
+-- EFM Language Server Configuration
 
 local solhint = require("efmls-configs.linters.solhint")
 local prettier_d = require("efmls-configs.formatters.prettier_d")
+local rustfmt = require("efmls-configs.formatters.rustfmt")
 
-lspconfig.efm.setup({
-	filetypes = { "solidity" },
+local languages = {
+	solidity = { solhint, prettier_d },
+	rust = { rustfmt },
+}
+
+local efmls_config = {
+	filetypes = vim.tbl_keys(languages),
 	init_options = {
 		codeAction = true,
 		completion = true,
@@ -319,8 +324,11 @@ lspconfig.efm.setup({
 	},
 	settings = {
 		rootMarkers = { "hardhat.config.js", ".git" },
-		languages = {
-			solidity = { solhint, prettier_d },
-		},
+		languages = languages,
 	},
-})
+}
+
+lspconfig.efm.setup(vim.tbl_extend("force", efmls_config, {
+	on_attach = on_attach,
+	capabilities = capabilities,
+}))

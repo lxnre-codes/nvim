@@ -30,6 +30,7 @@ mason_lspconfig.setup({
 		"emmet_ls",
 		"jsonls",
 		"gopls",
+		"rust_analyzer",
 		"zls",
 	},
 	-- auto-install configured servers (with lspconfig)
