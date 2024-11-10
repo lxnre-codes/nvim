@@ -5,13 +5,6 @@ if not lspconfig_status then
 	return
 end
 
--- import cmp-nvim-lsp plugin safely
-local cmp_nvim_lsp_status, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if not cmp_nvim_lsp_status then
-	print("CMP Nvim LSP not found, cmp-nvim-lsp setup not loaded")
-	return
-end
-
 -- import typescript plugin safely
 local typescript_setup, typescript = pcall(require, "typescript")
 if not typescript_setup then
@@ -19,11 +12,20 @@ if not typescript_setup then
 	return
 end
 
-local navic_setup, navic = pcall(require, "nvim-navic")
-if not navic_setup then
-	print("Navic LSP not found, navic setup not loaded")
+-- local navic_setup, navic = pcall(require, "nvim-navic")
+-- if not navic_setup then
+-- 	print("Navic LSP not found, navic setup not loaded")
+-- 	return
+-- end
+
+local keymaps_status, keymaps = pcall(require, "lanre.plugins.lsp.keymaps")
+if not keymaps_status then
+	print("keymaps not found" .. keymaps)
 	return
 end
+
+local on_attach = keymaps.on_attach
+local capabilities = keymaps.capabilities
 
 vim.cmd([[
 augroup LspBuf
@@ -37,46 +39,6 @@ augroup LspBuf
 augroup END
 ]])
 
-local keymap = vim.keymap -- for conciseness
-
--- enable keybinds only for when lsp server available
-local on_attach = function(client, bufnr)
-	-- keybind options
-	local opts = { noremap = true, silent = true, buffer = bufnr }
-
-	-- set keybinds
-	keymap.set("n", "gf", "<cmd>Lspsaga finder<CR>", opts) -- show definition, references
-	-- keymap.set("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts) -- got to declaration
-	keymap.set("n", "gD", "<Cmd>Lspsaga goto_definition<CR>", opts) -- got to declaration
-	keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>", opts) -- see definition and make edits in window
-	keymap.set("n", "gT", "<Cmd>Lspsaga goto_type_definition<CR>", opts) -- got to type declaration
-	keymap.set("n", "gt", "<cmd>Lspsaga peek_type_definition<CR>", opts) -- see type definition and make edits in window
-	keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts) -- go to implementation
-	keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", opts) -- see available code actions
-	keymap.set("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", opts) -- smart rename
-	keymap.set("n", "<leader>D", "<cmd>Lspsaga show_line_diagnostics<CR>", opts) -- show  diagnostics for line
-	keymap.set("n", "<leader>d", "<cmd>Lspsaga show_cursor_diagnostics<CR>", opts) -- show diagnostics for cursor
-	keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts) -- jump to previous diagnostic in buffer
-	keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts) -- jump to next diagnostic in buffer
-	keymap.set("n", "<leader>gh", "<cmd>Lspsaga hover_doc<CR>", opts) -- hover the current buffer
-	keymap.set("n", "ttg", "<cmd>Lspsaga term_toggle<CR>", opts) -- hover the current buffer
-	-- typescript specific keymaps (e.g. rename file and update imports)
-	if client.name == "ts_ls" then
-		keymap.set("n", "<leader>rf", ":TypescriptRenameFile<CR>") -- rename file and update imports
-		keymap.set("n", "<leader>oi", ":TypescriptOrganizeImports<CR>") -- organize imports (not in youtube nvim video)
-		keymap.set("n", "<leader>ru", ":TypescriptRemoveUnused<CR>") -- remove unused variables (not in youtube nvim video)
-	end
-	if client.name == "gopls" or client.name == "zls" then
-		vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-	end
-
-	if client.name == "bufls" then
-		keymap.set("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
-	end
-end
-
--- used to enable autocompletion (assign to every lsp server config)
-local capabilities = cmp_nvim_lsp.default_capabilities()
 local util = lspconfig.util
 
 -- Change the Diagnostic symbols in the sign column (gutter)
@@ -87,12 +49,6 @@ for type, icon in pairs(signs) do
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
--- configure html server
-lspconfig["html"].setup({
-	capabilities = capabilities,
-	on_attach = on_attach,
-})
-
 -- configure eslint
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = { "*.tsx", "*.ts", "*.jsx", "*.js" },
@@ -102,7 +58,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 -- vim.cmd([[autocmd BufWritePre * lua vim.lsp.buf.format()]])
 
+-- configure html server
+lspconfig["html"].setup({
+	cmd = { "bunx", "--bun", "vscode-html-language-server", "--stdio" },
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
 lspconfig["eslint"].setup({
+	cmd = { "bunx", "--bun", "vscode-eslint-language-server", "--stdio" },
 	on_attach = on_attach,
 	capabilities = capabilities,
 	settings = {
@@ -115,6 +79,7 @@ lspconfig["eslint"].setup({
 
 --configure json setup
 lspconfig["jsonls"].setup({
+	cmd = { "bunx", "--bun", "vscode-json-language-server", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "json", "jsonc" },
@@ -170,7 +135,7 @@ lspconfig["jsonls"].setup({
 -- configure liquid theme check
 lspconfig["theme_check"].setup({
 	root_dir = function()
-		return vim.loop.cwd()
+		return vim.fn.getcwd()
 	end,
 })
 
@@ -185,7 +150,23 @@ typescript.setup({
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.go",
 	callback = function()
-		vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" } }, apply = true })
+		local params = vim.lsp.util.make_range_params()
+		params.context = { only = { "source.organizeImports" } }
+		-- buf_request_sync defaults to a 1000ms timeout. Depending on your
+		-- machine and codebase, you may want longer. Add an additional
+		-- argument after params if you find that you have to write the file
+		-- twice for changes to be saved.
+		-- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+		local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+		for cid, res in pairs(result or {}) do
+			for _, r in pairs(res.result or {}) do
+				if r.edit then
+					local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+					vim.lsp.util.apply_workspace_edit(r.edit, enc)
+				end
+			end
+		end
+		vim.lsp.buf.format({ async = false })
 	end,
 })
 
@@ -209,6 +190,7 @@ lspconfig["gopls"].setup({
 
 -- configure php server
 lspconfig["intelephense"].setup({
+	cmd = { "bunx", "--bun", "intelephense", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
@@ -218,37 +200,57 @@ lspconfig["intelephense"].setup({
 -- 	on_attach = on_attach,
 -- })
 
--- configure solidit server
-lspconfig["solidity"].setup({})
-
--- configure sql server
-lspconfig["sqlls"].setup({
+-- configure solidity server
+lspconfig["solidity"].setup({
+	cmd = { "bunx", "--bun", "solidity", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "solidity" },
 	root_dir = util.root_pattern("hardhat.config.*", ".git"),
 })
 
+-- configure sql server
+lspconfig["sqlls"].setup({
+	cmd = { "bunx", "--bun", "sql-language-server", "up", "--method", "stdio" },
+	root_dir = function(fname)
+		return util.root_pattern(".git", "go.mod", "config.yml")(fname) or vim.fn.getcwd()
+	end,
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
+lspconfig.sqls.setup({
+	root_dir = function(fname)
+		return util.root_pattern(".git", "go.mod", "config.yml")(fname) or vim.fn.getcwd()
+	end,
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
 -- configure python server
 lspconfig["pyright"].setup({
+	cmd = { "bunx", "--bun", "pyright-langserver", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure css server
 lspconfig["cssls"].setup({
+	cmd = { "bunx", "--bun", "vscode-css-language-server", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure tailwindcss server
 lspconfig["tailwindcss"].setup({
+	cmd = { "bunx", "--bun", "tailwindcss-language-server", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure emmet language server
 lspconfig["emmet_ls"].setup({
+	cmd = { "bunx", "--bun", "emmet-ls", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
@@ -282,6 +284,7 @@ lspconfig["zls"].setup({
 })
 
 lspconfig["dockerls"].setup({
+	cmd = { "bunx", "--bun", "docker-langserver", "--stdio" },
 	capabilities = capabilities,
 	on_attach = function(client, bufnr)
 		on_attach(client, bufnr)

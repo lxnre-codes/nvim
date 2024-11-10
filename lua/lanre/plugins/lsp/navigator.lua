@@ -50,9 +50,9 @@ navigator.setup({
 					staticcheck = true,
 					matcher = "fuzzy",
 					diagnosticsDelay = "500ms",
-					experimentalWatchedFileDelay = "100ms",
+					-- experimentalWatchedFileDelay = "100ms",
 					symbolMatcher = "fuzzy",
-					gofumpt = false, -- true, -- turn on for new repos, gofmpt is good but also create code turmoils
+					gofumpt = true, -- true, -- turn on for new repos, gofmpt is good but also create code turmoils
 					buildFlags = { "-tags", "integration" },
 					-- buildFlags = {"-tags", "functional"}
 				},
