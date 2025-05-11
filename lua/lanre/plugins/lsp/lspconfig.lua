@@ -27,19 +27,20 @@ end
 local on_attach = keymaps.on_attach
 local capabilities = keymaps.capabilities
 
-vim.cmd([[
-augroup LspBuf
-  au!
-  autocmd User lsp_setup call lsp#register_server({
-      \ 'name': 'bufls',
-      \ 'cmd': {server_info->['bufls', 'serve']},
-      \ 'whitelist': ['proto'],
-      \ })
-  autocmd FileType proto nmap <buffer> gd <plug>(lsp-definition)
-augroup END
-]])
+-- vim.cmd([[
+-- augroup LspBuf
+--   au!
+--   autocmd User lsp_setup call lsp#register_server({
+--       \ 'name': 'bufls',
+--       \ 'cmd': {server_info->['bufls', 'serve']},
+--       \ 'whitelist': ['proto'],
+--       \ })
+--   autocmd FileType proto nmap <buffer> gd <plug>(lsp-definition)
+-- augroup END
+-- ]])
 
 local util = lspconfig.util
+local configs = require("lspconfig.configs")
 
 -- Change the Diagnostic symbols in the sign column (gutter)
 -- (not in youtube nvim video)
@@ -60,13 +61,11 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 -- configure html server
 lspconfig["html"].setup({
-	cmd = { "bunx", "--bun", "vscode-html-language-server", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 lspconfig["eslint"].setup({
-	cmd = { "bunx", "--bun", "vscode-eslint-language-server", "--stdio" },
 	on_attach = on_attach,
 	capabilities = capabilities,
 	settings = {
@@ -79,7 +78,6 @@ lspconfig["eslint"].setup({
 
 --configure json setup
 lspconfig["jsonls"].setup({
-	cmd = { "bunx", "--bun", "vscode-json-language-server", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "json", "jsonc" },
@@ -190,7 +188,6 @@ lspconfig["gopls"].setup({
 
 -- configure php server
 lspconfig["intelephense"].setup({
-	cmd = { "bunx", "--bun", "intelephense", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
@@ -202,7 +199,6 @@ lspconfig["intelephense"].setup({
 
 -- configure solidity server
 lspconfig["solidity"].setup({
-	cmd = { "bunx", "--bun", "solidity", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "solidity" },
@@ -211,7 +207,6 @@ lspconfig["solidity"].setup({
 
 -- configure sql server
 lspconfig["sqlls"].setup({
-	cmd = { "bunx", "--bun", "sql-language-server", "up", "--method", "stdio" },
 	root_dir = function(fname)
 		return util.root_pattern(".git", "go.mod", "config.yml")(fname) or vim.fn.getcwd()
 	end,
@@ -229,28 +224,51 @@ lspconfig.sqls.setup({
 
 -- configure python server
 lspconfig["pyright"].setup({
-	cmd = { "bunx", "--bun", "pyright-langserver", "--stdio" },
+	capabilities = capabilities,
+	on_attach = on_attach,
+	settings = {
+		python = {
+			venvPath = ".",
+			venv = ".venv",
+		},
+	},
+})
+
+-- protobuf server
+
+configs.protobuf_language_server = {
+	default_config = {
+		cmd = { "protobuf-language-server" },
+		filetypes = { "proto", "cpp" },
+		root_dir = util.root_pattern(".git"),
+		single_file_support = true,
+	},
+}
+
+lspconfig.protobuf_language_server.setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
+lspconfig.protols.setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure css server
 lspconfig["cssls"].setup({
-	cmd = { "bunx", "--bun", "vscode-css-language-server", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure tailwindcss server
 lspconfig["tailwindcss"].setup({
-	cmd = { "bunx", "--bun", "tailwindcss-language-server", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure emmet language server
 lspconfig["emmet_ls"].setup({
-	cmd = { "bunx", "--bun", "emmet-ls", "--stdio" },
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
@@ -284,7 +302,6 @@ lspconfig["zls"].setup({
 })
 
 lspconfig["dockerls"].setup({
-	cmd = { "bunx", "--bun", "docker-langserver", "--stdio" },
 	capabilities = capabilities,
 	on_attach = function(client, bufnr)
 		on_attach(client, bufnr)

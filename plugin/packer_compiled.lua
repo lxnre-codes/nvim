@@ -49,8 +49,8 @@ local function save_profiles(threshold)
 end
 
 time([[Luarocks path setup]], true)
-local package_path_str = "/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1727870382/share/lua/5.1/?.lua;/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1727870382/share/lua/5.1/?/init.lua;/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1727870382/lib/luarocks/rocks-5.1/?.lua;/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1727870382/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1727870382/lib/lua/5.1/?.so"
+local package_path_str = "/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1734355927/share/lua/5.1/?.lua;/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1734355927/share/lua/5.1/?/init.lua;/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1734355927/lib/luarocks/rocks-5.1/?.lua;/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1734355927/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/Users/xx_lanre/.cache/nvim/packer_hererocks/2.1.1734355927/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -90,25 +90,15 @@ _G.packer_plugins = {
     url = "https://github.com/Pocco81/auto-save.nvim"
   },
   ["avante.nvim"] = {
-    config = { "\27LJ\2\n申1\0\0\3\0\6\0\f6\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\2\3\0B\0\2\0029\0\4\0005\2\5\0B\0\2\1K\0\1\0\1\0\2\30auto_suggestions_provider\vclaude\rprovider\vclaude\nsetup\vavante\tload\15avante_lib\frequire\0" },
+    config = { "\27LJ\2\n申1\0\0\3\0\6\0\f6\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\2\3\0B\0\2\0029\0\4\0005\2\5\0B\0\2\1K\0\1\0\1\0\2\rprovider\vclaude\30auto_suggestions_provider\vclaude\nsetup\vavante\tload\15avante_lib\frequire\0" },
     loaded = true,
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/avante.nvim",
     url = "https://github.com/yetone/avante.nvim"
-  },
-  ["baleia.nvim"] = {
-    loaded = true,
-    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/baleia.nvim",
-    url = "https://github.com/m00qek/baleia.nvim"
   },
   ["cellular-automaton.nvim"] = {
     loaded = true,
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/cellular-automaton.nvim",
     url = "https://github.com/eandrju/cellular-automaton.nvim"
-  },
-  ["chafa.nvim"] = {
-    loaded = true,
-    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/chafa.nvim",
-    url = "https://github.com/princejoogie/chafa.nvim"
   },
   ["cmp-buffer"] = {
     loaded = true,
@@ -170,11 +160,6 @@ _G.packer_plugins = {
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/guihua.lua",
     url = "https://github.com/ray-x/guihua.lua"
   },
-  ["hologram.nvim"] = {
-    loaded = true,
-    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/hologram.nvim",
-    url = "https://github.com/edluffy/hologram.nvim"
-  },
   ["lspkind.nvim"] = {
     loaded = true,
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/lspkind.nvim",
@@ -229,6 +214,12 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/nvim-cmp",
     url = "https://github.com/hrsh7th/nvim-cmp"
+  },
+  ["nvim-colorizer.lua"] = {
+    config = { "\27LJ\2\n7\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\14colorizer\frequire\0" },
+    loaded = true,
+    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/nvim-colorizer.lua",
+    url = "https://github.com/catgoose/nvim-colorizer.lua"
   },
   ["nvim-jdtls"] = {
     loaded = true,
@@ -321,6 +312,12 @@ _G.packer_plugins = {
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/todo-comments.nvim",
     url = "https://github.com/folke/todo-comments.nvim"
   },
+  ["ts-comments.nvim"] = {
+    config = { "\27LJ\2\n9\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\16ts-comments\frequire\0" },
+    loaded = true,
+    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/ts-comments.nvim",
+    url = "https://github.com/folke/ts-comments.nvim"
+  },
   ["typescript.nvim"] = {
     loaded = true,
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/typescript.nvim",
@@ -364,23 +361,31 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: nvim-colorizer.lua
+time([[Config for nvim-colorizer.lua]], true)
+try_loadstring("\27LJ\2\n7\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\14colorizer\frequire\0", "config", "nvim-colorizer.lua")
+time([[Config for nvim-colorizer.lua]], false)
+-- Config for: ts-comments.nvim
+time([[Config for ts-comments.nvim]], true)
+try_loadstring("\27LJ\2\n9\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\16ts-comments\frequire\0", "config", "ts-comments.nvim")
+time([[Config for ts-comments.nvim]], false)
 -- Config for: nvim-transparent
 time([[Config for nvim-transparent]], true)
 try_loadstring("\27LJ\2\n9\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\16transparent\frequire\0", "config", "nvim-transparent")
 time([[Config for nvim-transparent]], false)
 -- Config for: avante.nvim
 time([[Config for avante.nvim]], true)
-try_loadstring("\27LJ\2\n申1\0\0\3\0\6\0\f6\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\2\3\0B\0\2\0029\0\4\0005\2\5\0B\0\2\1K\0\1\0\1\0\2\30auto_suggestions_provider\vclaude\rprovider\vclaude\nsetup\vavante\tload\15avante_lib\frequire\0", "config", "avante.nvim")
+try_loadstring("\27LJ\2\n申1\0\0\3\0\6\0\f6\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\2\3\0B\0\2\0029\0\4\0005\2\5\0B\0\2\1K\0\1\0\1\0\2\rprovider\vclaude\30auto_suggestions_provider\vclaude\nsetup\vavante\tload\15avante_lib\frequire\0", "config", "avante.nvim")
 time([[Config for avante.nvim]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
 vim.cmd [[ packadd nvim-treesitter ]]
-vim.cmd [[ packadd nvim-ts-autotag ]]
 vim.cmd [[ packadd render-markdown.nvim ]]
 
 -- Config for: render-markdown.nvim
 try_loadstring("\27LJ\2\nA\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\20render-markdown\frequire\0", "config", "render-markdown.nvim")
 
+vim.cmd [[ packadd nvim-ts-autotag ]]
 time([[Sequenced loading]], false)
 
 _G._packer.inside_compile = false

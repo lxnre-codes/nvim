@@ -31,7 +31,16 @@ null_ls.setup({
 				return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json" }) -- change file extension if you use something else
 			end,
 		}),
-		null_ls.builtins.diagnostics.hadolint, -- Dockerfile linter
+		diagnostics.hadolint, -- Dockerfile linter
+		diagnostics.mypy.with({
+			extra_args = function()
+				local virtual = os.getenv("VIRTUAL_ENV") or os.getenv("CONDA_PREFIX") or "/usr"
+				print("venv " .. virtual)
+				return { "--python-executable", virtual .. "/bin/python3" }
+			end,
+		}), -- Python linter
+		diagnostics.ruff,
+		formatting.black,
 	},
 	-- configure format on save
 	on_attach = function(current_client, bufnr)
