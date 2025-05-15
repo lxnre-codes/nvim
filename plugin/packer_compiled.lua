@@ -90,7 +90,7 @@ _G.packer_plugins = {
     url = "https://github.com/Pocco81/auto-save.nvim"
   },
   ["avante.nvim"] = {
-    config = { "\27LJ\2\n申1\0\0\3\0\6\0\f6\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\2\3\0B\0\2\0029\0\4\0005\2\5\0B\0\2\1K\0\1\0\1\0\2\rprovider\vclaude\30auto_suggestions_provider\vclaude\nsetup\vavante\tload\15avante_lib\frequire\0" },
+    config = { "\27LJ\2\n申1\0\0\3\0\6\0\f6\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\2\3\0B\0\2\0029\0\4\0005\2\5\0B\0\2\1K\0\1\0\1\0\2\30auto_suggestions_provider\vclaude\rprovider\vclaude\nsetup\vavante\tload\15avante_lib\frequire\0" },
     loaded = true,
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/avante.nvim",
     url = "https://github.com/yetone/avante.nvim"
@@ -119,6 +119,12 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/cmp_luasnip",
     url = "https://github.com/saadparwaiz1/cmp_luasnip"
+  },
+  ["conform.nvim"] = {
+    config = { "\27LJ\2\n､\2\0\0\6\0\f\0\0156\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\4\0005\3\3\0=\3\5\0025\3\t\0005\4\6\0005\5\a\0=\5\b\4=\4\n\3=\3\v\2B\0\2\1K\0\1\0\15formatters\17php-cs-fixer\1\0\1\17php-cs-fixer\0\targs\1\4\0\0\bfix\19--rules=@PSR12\14$FILENAME\1\0\3\nstdin\1\targs\0\fcommand\17php-cs-fixer\21formatters_by_ft\1\0\3\21formatters_by_ft\0\15formatters\0\20notify_on_error\2\1\0\1\bphp\17php-cs-fixer\nsetup\fconform\frequire\0" },
+    loaded = true,
+    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/conform.nvim",
+    url = "https://github.com/stevearc/conform.nvim"
   },
   ["dressing.nvim"] = {
     loaded = true,
@@ -195,15 +201,20 @@ _G.packer_plugins = {
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/navigator.lua",
     url = "https://github.com/ray-x/navigator.lua"
   },
+  ["none-ls-extras.nvim"] = {
+    loaded = true,
+    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/none-ls-extras.nvim",
+    url = "https://github.com/nvimtools/none-ls-extras.nvim"
+  },
+  ["none-ls.nvim"] = {
+    loaded = true,
+    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/none-ls.nvim",
+    url = "https://github.com/nvimtools/none-ls.nvim"
+  },
   ["nui.nvim"] = {
     loaded = true,
     path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/nui.nvim",
     url = "https://github.com/MunifTanjim/nui.nvim"
-  },
-  ["null-ls.nvim"] = {
-    loaded = true,
-    path = "/Users/xx_lanre/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
-    url = "https://github.com/jose-elias-alvarez/null-ls.nvim"
   },
   ["nvim-autopairs"] = {
     loaded = true,
@@ -361,6 +372,18 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: avante.nvim
+time([[Config for avante.nvim]], true)
+try_loadstring("\27LJ\2\n申1\0\0\3\0\6\0\f6\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\2\3\0B\0\2\0029\0\4\0005\2\5\0B\0\2\1K\0\1\0\1\0\2\30auto_suggestions_provider\vclaude\rprovider\vclaude\nsetup\vavante\tload\15avante_lib\frequire\0", "config", "avante.nvim")
+time([[Config for avante.nvim]], false)
+-- Config for: nvim-transparent
+time([[Config for nvim-transparent]], true)
+try_loadstring("\27LJ\2\n9\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\16transparent\frequire\0", "config", "nvim-transparent")
+time([[Config for nvim-transparent]], false)
+-- Config for: conform.nvim
+time([[Config for conform.nvim]], true)
+try_loadstring("\27LJ\2\n､\2\0\0\6\0\f\0\0156\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\4\0005\3\3\0=\3\5\0025\3\t\0005\4\6\0005\5\a\0=\5\b\4=\4\n\3=\3\v\2B\0\2\1K\0\1\0\15formatters\17php-cs-fixer\1\0\1\17php-cs-fixer\0\targs\1\4\0\0\bfix\19--rules=@PSR12\14$FILENAME\1\0\3\nstdin\1\targs\0\fcommand\17php-cs-fixer\21formatters_by_ft\1\0\3\21formatters_by_ft\0\15formatters\0\20notify_on_error\2\1\0\1\bphp\17php-cs-fixer\nsetup\fconform\frequire\0", "config", "conform.nvim")
+time([[Config for conform.nvim]], false)
 -- Config for: nvim-colorizer.lua
 time([[Config for nvim-colorizer.lua]], true)
 try_loadstring("\27LJ\2\n7\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\14colorizer\frequire\0", "config", "nvim-colorizer.lua")
@@ -369,23 +392,15 @@ time([[Config for nvim-colorizer.lua]], false)
 time([[Config for ts-comments.nvim]], true)
 try_loadstring("\27LJ\2\n9\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\16ts-comments\frequire\0", "config", "ts-comments.nvim")
 time([[Config for ts-comments.nvim]], false)
--- Config for: nvim-transparent
-time([[Config for nvim-transparent]], true)
-try_loadstring("\27LJ\2\n9\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\16transparent\frequire\0", "config", "nvim-transparent")
-time([[Config for nvim-transparent]], false)
--- Config for: avante.nvim
-time([[Config for avante.nvim]], true)
-try_loadstring("\27LJ\2\n申1\0\0\3\0\6\0\f6\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\0016\0\0\0'\2\3\0B\0\2\0029\0\4\0005\2\5\0B\0\2\1K\0\1\0\1\0\2\rprovider\vclaude\30auto_suggestions_provider\vclaude\nsetup\vavante\tload\15avante_lib\frequire\0", "config", "avante.nvim")
-time([[Config for avante.nvim]], false)
 -- Load plugins in order defined by `after`
 time([[Sequenced loading]], true)
 vim.cmd [[ packadd nvim-treesitter ]]
+vim.cmd [[ packadd nvim-ts-autotag ]]
 vim.cmd [[ packadd render-markdown.nvim ]]
 
 -- Config for: render-markdown.nvim
 try_loadstring("\27LJ\2\nA\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\20render-markdown\frequire\0", "config", "render-markdown.nvim")
 
-vim.cmd [[ packadd nvim-ts-autotag ]]
 time([[Sequenced loading]], false)
 
 _G._packer.inside_compile = false

@@ -17,6 +17,11 @@ null_ls.setup({
 		--  to disable file types use
 		--  "formatting.prettierd.with({disabled_filetypes: {}})" (see null-ls docs)
 		formatting.prettierd, -- js/ts formatter
+		formatting.duster, -- php
+		formatting.phpcsfixer, -- php
+		formatting.pretty_php, -- php
+		formatting.phpcbf, -- php
+		formatting.pint, -- php
 		formatting.stylua, -- lua formatter
 		formatting.fixjson, -- json formatter
 		formatting.goimports, -- go formatter
@@ -25,7 +30,7 @@ null_ls.setup({
 		}), -- go formatter
 		formatting.gofumpt, -- go formatter
 		formatting.sqlfluff, --sql formatting
-		diagnostics.eslint_d.with({ -- js/ts linter
+		require("none-ls.diagnostics.eslint").with({ -- js/ts linter
 			-- only enable eslint if root has .eslintrc.js (not in youtube nvim video)
 			condition = function(utils)
 				return utils.root_has_file({ ".eslintrc.js", ".eslintrc.json" }) -- change file extension if you use something else

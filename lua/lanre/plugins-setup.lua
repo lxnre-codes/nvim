@@ -14,12 +14,12 @@ local packer_bootstrap = ensure_packer() -- true if packer was just installed
 
 -- autocommand that reloads neovim and installs/updates/removes plugins
 -- when file is saved
--- vim.cmd([[
---   augroup packer_user_config
---     autocmd!
---     autocmd BufWritePost plugins-setup.lua source <afile> | PackerSync
---   augroup end
--- ]])
+vim.cmd([[
+  augroup packer_user_config
+    autocmd!
+    autocmd BufWritePost plugins-setup.lua source <afile> | PackerSync
+  augroup end
+]])
 
 -- import packer safely
 local status, packer = pcall(require, "packer")
@@ -111,6 +111,29 @@ return packer.startup({
 		use("jose-elias-alvarez/typescript.nvim") -- additional functionality for typescript server (e.g. rename file & update imports)
 		use("onsails/lspkind.nvim") -- vs-code like icons for autocompletion
 
+		use({
+			"stevearc/conform.nvim",
+			config = function()
+				require("conform").setup({
+					formatters_by_ft = {
+						php = "php-cs-fixer",
+					},
+					formatters = {
+						["php-cs-fixer"] = {
+							command = "php-cs-fixer",
+							args = {
+								"fix",
+								"--rules=@PSR12", -- Formatting preset. Other presets are available, see the php-cs-fixer docs.
+								"$FILENAME",
+							},
+							stdin = false,
+						},
+					},
+					notify_on_error = true,
+				})
+			end,
+		})
+
 		-- java lsp config
 		use("mfussenegger/nvim-jdtls")
 
@@ -118,7 +141,7 @@ return packer.startup({
 		use("prabirshrestha/vim-lsp")
 
 		-- formatting & linting
-		use("jose-elias-alvarez/null-ls.nvim") -- configure formatters & linters
+		use({ "nvimtools/none-ls.nvim", requires = { "nvimtools/none-ls-extras.nvim" } }) -- configure formatters & linters
 		use("jayp0521/mason-null-ls.nvim") -- bridges gap b/w mason & null-ls
 
 		-- treesitter configuration
