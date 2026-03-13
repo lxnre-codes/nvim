@@ -1,12 +1,5 @@
--- import lspconfig plugin safely
-local lspconfig_status, lspconfig = pcall(require, "lspconfig")
-if not lspconfig_status then
-	print("LSP Config not found, lsp setup not loaded")
-	return
-end
-
 -- import typescript plugin safely
-local typescript_setup, typescript = pcall(require, "typescript")
+local typescript_setup, typescript = pcall(require, "typescript-tools")
 if not typescript_setup then
 	print("Typescript LSP not found, typescript setup not loaded")
 	return
@@ -39,9 +32,6 @@ local capabilities = keymaps.capabilities
 -- augroup END
 -- ]])
 
-local util = lspconfig.util
-local configs = require("lspconfig.configs")
-
 -- Change the Diagnostic symbols in the sign column (gutter)
 -- (not in youtube nvim video)
 local signs = { Error = " ", Warn = " ", Hint = "ﴞ ", Info = " " }
@@ -60,12 +50,12 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 -- vim.cmd([[autocmd BufWritePre * lua vim.lsp.buf.format()]])
 
 -- configure html server
-lspconfig["html"].setup({
+vim.lsp.config("html", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
-lspconfig["eslint"].setup({
+vim.lsp.config("eslint", {
 	on_attach = on_attach,
 	capabilities = capabilities,
 	settings = {
@@ -77,7 +67,7 @@ lspconfig["eslint"].setup({
 })
 
 --configure json setup
-lspconfig["jsonls"].setup({
+vim.lsp.config("jsonls", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "json", "jsonc" },
@@ -131,7 +121,7 @@ lspconfig["jsonls"].setup({
 })
 
 -- configure liquid theme check
-lspconfig["theme_check"].setup({
+vim.lsp.config("theme_check", {
 	root_dir = function()
 		return vim.fn.getcwd()
 	end,
@@ -148,14 +138,18 @@ typescript.setup({
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.go",
 	callback = function()
-		local params = vim.lsp.util.make_range_params()
+		local clients = vim.lsp.get_clients({ bufnr = 0, name = "gopls" })
+		local client = clients[1]
+		if not client then
+			return
+		end
+
+		local params = vim.lsp.util.make_range_params(0, client.offset_encoding)
+
+		---@diagnostic disable-next-line: inject-field
 		params.context = { only = { "source.organizeImports" } }
-		-- buf_request_sync defaults to a 1000ms timeout. Depending on your
-		-- machine and codebase, you may want longer. Add an additional
-		-- argument after params if you find that you have to write the file
-		-- twice for changes to be saved.
-		-- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
-		local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+
+		local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
 		for cid, res in pairs(result or {}) do
 			for _, r in pairs(res.result or {}) do
 				if r.edit then
@@ -169,12 +163,12 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 -- configure go server
-lspconfig["gopls"].setup({
+vim.lsp.config("gopls", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 	cmd = { "gopls", "serve" },
 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
-	root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+	root_dir = vim.fs.root(0, { "go.work", "go.mod", ".git" }),
 	settings = {
 		gopls = {
 			gofumpt = true,
@@ -187,7 +181,7 @@ lspconfig["gopls"].setup({
 })
 
 -- configure php server
-lspconfig["intelephense"].setup({
+vim.lsp.config("intelephense", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
@@ -198,32 +192,27 @@ lspconfig["intelephense"].setup({
 -- })
 
 -- configure solidity server
-lspconfig["solidity"].setup({
+vim.lsp.config("solidity", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "solidity" },
-	root_dir = util.root_pattern("hardhat.config.*", ".git"),
+	root_dir = vim.fs.root(0, { "hardhat.config.*", ".git" }),
 })
 
 -- configure sql server
-lspconfig["sqlls"].setup({
-	root_dir = function(fname)
-		return util.root_pattern(".git", "go.mod", "config.yml")(fname) or vim.fn.getcwd()
-	end,
-	capabilities = capabilities,
-	on_attach = on_attach,
-})
+vim.lsp.config("sqlls", {
+	root_dir = function(bufnr, on_dir)
+		local fname = vim.api.nvim_buf_get_name(bufnr)
+		local root = vim.fs.root(fname, { ".git", "go.mod", "config.yml" })
 
-lspconfig.sqls.setup({
-	root_dir = function(fname)
-		return util.root_pattern(".git", "go.mod", "config.yml")(fname) or vim.fn.getcwd()
+		on_dir(root or vim.fn.getcwd())
 	end,
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure python server
-lspconfig["pyright"].setup({
+vim.lsp.config("pyright", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 	settings = {
@@ -235,47 +224,46 @@ lspconfig["pyright"].setup({
 })
 
 -- protobuf server
+-- configs.protobuf_language_server = {
+-- 	default_config = {
+-- 		cmd = { "protobuf-language-server" },
+-- 		filetypes = { "proto", "cpp" },
+-- 		root_dir = util.root_pattern(".git"),
+-- 		single_file_support = true,
+-- 	},
+-- }
 
-configs.protobuf_language_server = {
-	default_config = {
-		cmd = { "protobuf-language-server" },
-		filetypes = { "proto", "cpp" },
-		root_dir = util.root_pattern(".git"),
-		single_file_support = true,
-	},
-}
-
-lspconfig.protobuf_language_server.setup({
+vim.lsp.config("protobuf_language_server", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
-lspconfig.protols.setup({
+vim.lsp.config("protols", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure css server
-lspconfig["cssls"].setup({
+vim.lsp.config("cssls", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure tailwindcss server
-lspconfig["tailwindcss"].setup({
+vim.lsp.config("tailwindcss", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 })
 
 -- configure emmet language server
-lspconfig["emmet_ls"].setup({
+vim.lsp.config("emmet_ls", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 	filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
 })
 
 -- configure lua server (with special settings)
-lspconfig["lua_ls"].setup({
+vim.lsp.config("lua_ls", {
 	capabilities = capabilities,
 	on_attach = on_attach,
 	settings = { -- custom settings for lua
@@ -296,12 +284,12 @@ lspconfig["lua_ls"].setup({
 })
 
 -- configure zig server
-lspconfig["zls"].setup({
+vim.lsp.config("zls", {
 	on_attach = on_attach,
 	capabilities = capabilities,
 })
 
-lspconfig["dockerls"].setup({
+vim.lsp.config("dockerls", {
 	capabilities = capabilities,
 	on_attach = function(client, bufnr)
 		on_attach(client, bufnr)
@@ -314,12 +302,12 @@ lspconfig["dockerls"].setup({
 				return diagnostic.message ~= "Pin versions in apt get install" and diagnostic.code ~= "DL3008"
 			end, result.diagnostics)
 
-			vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
+			vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx)
 		end
 	end,
 })
 
-lspconfig["rust_analyzer"].setup({
+vim.lsp.config("rust_analyzer", {
 	on_attach = on_attach,
 	capabilities = capabilities,
 })
@@ -351,7 +339,32 @@ local efmls_config = {
 	},
 }
 
-lspconfig.efm.setup(vim.tbl_extend("force", efmls_config, {
-	on_attach = on_attach,
-	capabilities = capabilities,
-}))
+vim.lsp.config(
+	"efm",
+	vim.tbl_extend("force", efmls_config, {
+		on_attach = on_attach,
+		capabilities = capabilities,
+	})
+)
+
+vim.lsp.enable({
+	"efm",
+	"rust_analyzer",
+	"dockerls",
+	"zls",
+	"lua_ls",
+	"emmet_ls",
+	"tailwindcss",
+	"cssls",
+	"intelephense",
+	"protols",
+	"protobuf_language_server",
+	"pyright",
+	"solidity",
+	"sqlls",
+	"gopls",
+	"theme_check",
+	"jsonls",
+	"eslint",
+	"html",
+})
