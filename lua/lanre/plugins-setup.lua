@@ -47,7 +47,13 @@ return packer.startup({
 		use("inkarkat/vim-ReplaceWithRegister") -- replace with register contents using motion (gr + motion)
 
 		-- commenting with gc
-		use("numToStr/Comment.nvim")
+		-- use("numToStr/Comment.nvim")
+
+		use({
+			"faergeek/Comment.nvim",
+			branch = "nvim-0.12-compatibility",
+			opts = {},
+		})
 
 		-- file explorer
 		use("nvim-tree/nvim-tree.lua")
@@ -203,36 +209,6 @@ return packer.startup({
 		use({ "ray-x/forgit.nvim" })
 
 		-- use({ "edluffy/hologram.nvim" })
-
-		use({
-			"yetone/avante.nvim",
-			-- event = "VeryLazy",
-			run = "make BUILD_FROM_SOURCE=true", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
-			requires = {
-				"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-				"stevearc/dressing.nvim",
-				"nvim-lua/plenary.nvim",
-				"MunifTanjim/nui.nvim",
-				--- The below is optional, make sure to setup it properly if you have lazy=true
-				{
-					"MeanderingProgrammer/render-markdown.nvim",
-					after = { "nvim-treesitter" },
-					requires = { "nvim-tree/nvim-web-devicons", opt = true },
-					config = function()
-						require("render-markdown").setup({
-							--	file_types = { "markdown", "Avante" },
-						})
-					end,
-				},
-			},
-			config = function()
-				require("avante_lib").load()
-				require("avante").setup({
-					provider = "claude", -- Recommend using Claude
-					auto_suggestions_provider = "claude",
-				})
-			end,
-		})
 
 		use({ "SmiteshP/nvim-navic", requires = "neovim/nvim-lspconfig" })
 

@@ -17,7 +17,25 @@ vim.cmd([[hi NvimTreeNormal guibg=NONE ctermbg=NONE]])
 
 vim.cmd([[hi Normal guibg=NONE ctermbg=NONE]])
 
+local function on_attach(bufnr)
+	local api = require("nvim-tree.api")
+
+	local function opts(desc)
+		return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+	end
+
+	-- Load default mappings first or custom ones
+	api.config.mappings.default_on_attach(bufnr)
+
+	-- Override 'd' to use trash (api.fs.trash) instead of permanent removal (api.fs.remove)
+	vim.keymap.set({ "n", "x" }, "d", api.fs.trash, opts("Trash"))
+
+	-- Optionally, if you still want a permanent delete key, bind it to another key like 'D'
+	vim.keymap.set({ "n", "x" }, "D", api.fs.remove, opts("Delete"))
+end
+
 nvimtree.setup({
+	on_attach = on_attach,
 	diagnostics = {
 		enable = true,
 		show_on_dirs = true,
