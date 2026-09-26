@@ -31,17 +31,21 @@ mason.setup()
 -- typescript-language-server -> ts_ls
 -- vscode-solidity-server -> solidity_ls
 -- dockerfile-language-server-nodejs -> dockerls
+
+-- bun add -g sql-language-server @tailwindcss/language-server vscode-langservers-extracted pyright emmet-ls intelephense solc solidity-ls \
+-- typescript-language-server vscode-solidity-server dockerfile-language-server-nodejs
+
 mason_lspconfig.setup({
 	-- list of servers for mason to install
 	ensure_installed = {
-		-- "solidity_ls",
-		-- "ts_ls",
-		-- "html",
-		-- "cssls",
-		-- "tailwindcss",
+		"solidity_ls",
+		"ts_ls",
+		"html",
+		"cssls",
+		"tailwindcss",
 		"lua_ls",
-		-- "emmet_ls",
-		-- "jsonls",
+		"emmet_ls",
+		"jsonls",
 		"black",
 		"pyright",
 		"mypy",
